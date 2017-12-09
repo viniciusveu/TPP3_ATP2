@@ -12,7 +12,7 @@ void Verifica_Centavos(int Valor, char *Str_cent) {
     {
       if ( Verifica_Unidade(num, str_u) )
 	     if ( num%10 == 1) strcat(str_u," centavo");
-	     else strcat(str_u," centavos");
+	else strcat(str_u," centavos");
 
       strcpy(str_cent,str_u);
     }
