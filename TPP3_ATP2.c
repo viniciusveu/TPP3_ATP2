@@ -32,7 +32,7 @@ Cadeia Str_final;
 
 void  Leitura_Valor(long int *Valor);
 short Reais(int Valor, char *Str);
-void  Centavos(long int Valor, char *Str);
+short Centavos(long int Valor, char *Str);
 short Unidade(int Valor, char *Str);
 short Dezena(int Valor, char *Str);
 short Centena(int Valor, char *Str);
@@ -125,7 +125,7 @@ short Reais(int Valor, char *Str)  {
 
 //==============================================================================
 
-void Centavos( long int Valor, char *Str)  {
+short Centavos( long int Valor, char *Str)  {
 
   int cent = (Valor%100);
   Cadeia Str_unid, Str_deze;
@@ -133,29 +133,32 @@ void Centavos( long int Valor, char *Str)  {
   strcpy(Str_unid, NULA);
   strcpy(Str_deze, NULA);
 
-  if( !Dezena(cent, Str_deze) )  {
-    if( Unidade(cent, Str_unid) )
-      if( cent%DEZ == 1 ) strcat(Str_unid, " centavo ");
-      else strcat(Str_unid, " centavos ");
-    strcpy(Str, Str_unid);
-  }
-  else  {
-    strcpy(Str_unid, NULA);
-    if( Unidade(Valor, Str_unid) == 0 )  {
-      strcat(Str_unid, " centavos ");
-      strcat(Str_deze, Str_unid);
-      strcpy(Str, Str_deze);
+  if(cent)  {
+    if( !Dezena(cent, Str_deze) )  {
+      if( Unidade(cent, Str_unid) )
+        if( cent%DEZ == 1 ) strcat(Str_unid, " centavo ");
+        else strcat(Str_unid, " centavos ");
+      strcpy(Str, Str_unid);
     }
     else  {
-      if ( ((cent/DEZ) != 1 ) ) {
-        strcat(Str_deze, " e ");
+      strcpy(Str_unid, NULA);
+      if( Unidade(Valor, Str_unid) == 0 )  {
+        strcat(Str_unid, " centavos ");
         strcat(Str_deze, Str_unid);
+        strcpy(Str, Str_deze);
       }
-      strcat(Str_deze, " centavos ");
-      strcpy(Str, Str_deze);
+      else  {
+        if ( ((cent/DEZ) != 1 ) ) {
+          strcat(Str_deze, " e ");
+          strcat(Str_deze, Str_unid);
+        }
+        strcat(Str_deze, " centavos ");
+        strcpy(Str, Str_deze);
+      }
     }
+    return 1;
   }
-  return;
+  else return 0;
 } //Centavos
 
 //==============================================================================
@@ -335,31 +338,35 @@ int main(void) {
 
   printf("O valor lido é: \n");
   if(Milhar(reais, Str_mil))  {
-    if(Reais(reais, Str_reais)){
-      Centavos(Valor, Str_cent);
-      strcat(Str_mil, ",");
-      strcat(Str_mil, Str_reais);
-      strcat(Str_mil, "e");
-      strcat(Str_mil, Str_cent);
-      strcpy(Str_final, Str_mil);
-    }
+    if(Reais(reais, Str_reais))
+      if(Centavos(Valor, Str_cent)) {
+        strcat(Str_mil, ",");
+        strcat(Str_mil, Str_reais);
+        strcat(Str_mil, "e");
+        strcat(Str_mil, Str_cent);
+        strcpy(Str_final, Str_mil);
+      }
+      else {
+        strcat(Str_mil, ",");
+        strcat(Str_mil, Str_reais);
+        strcpy(Str_final, Str_mil);
+      }
     else {
-      Centavos(Valor, Str_cent);
-      strcat(Str_mil, "e");
-      strcat(Str_mil, Str_cent);
-      strcpy(Str_final, Str_mil);
+      if(Centavos(Valor, Str_cent)) {
+        strcat(Str_mil, "e");
+        strcat(Str_mil, Str_cent);
+        strcpy(Str_final, Str_mil);
+      }
+      else  strcpy(Str_final, Str_mil);
     }
   }
   else  {
     if(Reais(reais, Str_reais)) {
-      Centavos(Valor, Str_cent);
-      strcat(Str_reais, "e");
-      strcat(Str_reais, Str_cent);
-      strcpy(Str_final, Str_reais);
-    }
-    else {
-      Centavos(Valor, Str_cent);
-      strcpy(Str_final, Str_cent);
+      if(Centavos(Valor, Str_cent)) {
+        strcat(Str_reais, "e");
+        strcat(Str_reais, Str_cent);
+        strcpy(Str_final, Str_reais);
+      }
     }
   }
 
