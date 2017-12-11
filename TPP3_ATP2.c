@@ -108,9 +108,16 @@ short Reais(int Valor, char *Str)  {
       }
       else {
         if( Unidade(reais, Str_unid) ) {
-          strcat(Str_cent, Str_unid);
-          strcpy(Str, Str_cent);
-          strcat(Str, " reais ");
+          if( reais%10 == 1 ) {
+            strcat(Str_cent, Str_unid);
+            strcat(Str_cent, " real ");
+            strcat(Str, Str_cent);
+          }
+          else  {
+            strcat(Str_cent, Str_unid);
+            strcpy(Str, Str_cent);
+            strcat(Str, " reais ");
+          }
         }
         else {
           if( (reais/100) == 1 ) strcpy(Str_cent, " cem ");
@@ -285,7 +292,6 @@ short Milhar(int Valor, char *Str) {
         }
         else {
           if((milhar/100) == 1) strcpy(Str_cent, " cem mil ");
-          strcat(Str_cent, " mil ");
           strcat(Str, Str_cent);
         }
       }
@@ -367,6 +373,10 @@ int main(void) {
         strcat(Str_reais, Str_cent);
         strcpy(Str_final, Str_reais);
       }
+    }
+    else  {
+      if(Centavos(Valor, Str_cent))
+        strcpy(Str_final, Str_cent);
     }
   }
 
