@@ -374,5 +374,6 @@ int main(void) {
   puts(Str_final);
   PULA;
 
+  system("PAUSE");
   return 0;
 }
