@@ -78,13 +78,15 @@ short Reais(int Valor, char *Str)  {
       }
       else {
         if(Unidade(reais, Str_unid)){
+          strcat(Str_cent, " e ");
           strcat(Str_cent, Str_unid);
           strcpy(Str, Str_cent);
           strcat(Str, " reais ");
         }
         else {
           if((reais/100) == 1) strcpy(Str_cent, " cem reais ");
-          strcat(Str, Str_cent);
+          strcat(Str_cent, " reais ");
+          strcpy(Str, Str_cent);
         }
       }
     }
@@ -93,6 +95,7 @@ short Reais(int Valor, char *Str)  {
       if( Dezena(reais, Str_deze) )  {
         if(Unidade(reais, Str_unid)) {
           strcat(Str_cent, Str_deze);
+          strcat(Str_cent, " e ");
           strcat(Str_cent, Str_unid);
           strcpy(Str, Str_cent);
           strcat(Str, " reais ");
@@ -272,12 +275,14 @@ short Milhar(int Valor, char *Str) {
       }
       else {
         if(Unidade(milhar, Str_unid)){
+          strcat(Str_cent, " e ");
           strcat(Str_cent, Str_unid);
           strcpy(Str, Str_cent);
           strcat(Str, " mil ");
         }
         else {
           if((milhar/100) == 1) strcpy(Str_cent, " cem mil ");
+          strcat(Str_cent, " mil ");
           strcat(Str, Str_cent);
         }
       }
@@ -306,6 +311,7 @@ short Milhar(int Valor, char *Str) {
         else {
           if( (milhar/100) == 1 ) strcpy(Str_cent, " cem ");
           strcat(Str_cent, " mil ");
+          strcpy(Str, Str_cent);
         }
       }
     }
@@ -335,26 +341,31 @@ int main(void) {
       strcat(Str_mil, Str_reais);
       strcat(Str_mil, "e");
       strcat(Str_mil, Str_cent);
+      strcpy(Str_final, Str_mil);
     }
-  }
-  else
-    if(Reais(reais, Str_reais)) {
+    else {
       Centavos(Valor, Str_cent);
-      strcat(Str_mil, ",");
-      strcat(Str_mil, Str_reais);
       strcat(Str_mil, "e");
       strcat(Str_mil, Str_cent);
+      strcpy(Str_final, Str_mil);
     }
+  }
+  else  {
+    if(Reais(reais, Str_reais)) {
+      Centavos(Valor, Str_cent);
+      strcat(Str_reais, "e");
+      strcat(Str_reais, Str_cent);
+      strcpy(Str_final, Str_reais);
+    }
+    else {
+      Centavos(Valor, Str_cent);
+      strcpy(Str_final, Str_cent);
+    }
+  }
 
   PULA;
-  puts(Str_mil);
+  puts(Str_final);
   PULA;
 
   return 0;
 }
-
-
-
-
-
-
