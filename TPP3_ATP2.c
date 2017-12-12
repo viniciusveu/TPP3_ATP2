@@ -45,26 +45,12 @@ void Leitura_Valor( long int *Valor) {
   int mil, real, centavos;
   char entrada[DEZ];
   strcpy(entrada, NULA);
-  printf("Entre com um valor: R$ ");
+  printf("Entre com um valor: ");
+  printf("[Entre com apenas números!]\n");
+ printf(">>R$");
   scanf("%s", entrada);
-  fflush(stdin);
-  for(int i; i != '\0'; i++)  {
-    if((entrada[i] == ',') || (entrada[i] == '.')) {
-      entrada[i] = entrada[i+1];
-      i--;
-    }
-  }
- 
- 
  
   *Valor = atoi(entrada);
- 
-  // do {
-  //   printf(">Entre com um valor de R$1,00 até R$999.999,99: \n");
-  //   printf("[Entre com apenas números!]\n");
-  //   scanf("%ld", Valor);
-  // }
-  // while (*Valor < 1 || *Valor > 99999999 );
  
   centavos = *Valor%100;
   real = (*Valor/100)%1000;
