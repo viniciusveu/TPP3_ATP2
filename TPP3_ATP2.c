@@ -6,30 +6,31 @@ correspondente.
 -João Pedro Silva Baptista
 Trabalho Prático de Programação 3
 ATP II - FCT/UNESP */
-
+ 
 //CÓDIGO========================================================================
-
+ 
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
 #include <string.h>
 #include <ctype.h>
-
+ 
 #define PULA printf("\n\n")
 #define DEZ 10
 #define NULA "\0"
-
+ 
 typedef char Cadeia[200];
-
+ 
 //VARIAVEIS_GLOBAIS==============================================================
-
+ 
 Cadeia Str_cent;
 Cadeia Str_reais;
 Cadeia Str_mil;
 Cadeia Str_final;
-
+ 
 //SCOPO=========================================================================
-
+ 
+void  Concatenar(long int Valor);
 void  Leitura_Valor(long int *Valor);
 short Reais(int Valor, char *Str);
 short Centavos(long int Valor, char *Str);
@@ -37,28 +38,52 @@ short Unidade(int Valor, char *Str);
 short Dezena(int Valor, char *Str);
 short Centena(int Valor, char *Str);
 short Milhar(int Valor, char *Str);
-
+ 
 //FUNÇÔES=======================================================================
-
+ 
 void Leitura_Valor( long int *Valor) {
-  do {
-    printf(">Entre com um valor de 1 até 999 999 99: \n");
-    scanf("%ld", Valor);
+  int mil, real, centavos;
+  char entrada[DEZ];
+  strcpy(entrada, NULA);
+  printf("Entre com um valor: R$ ");
+  scanf("%s", entrada);
+  fflush(stdin);
+  for(int i; i != '\0'; i++)  {
+    if((entrada[i] == ',') || (entrada[i] == '.')) {
+      entrada[i] = entrada[i+1];
+      i--;
+    }
   }
-  while (*Valor < 1 || *Valor > 99999999 );
+ 
+ 
+ 
+  *Valor = atoi(entrada);
+ 
+  // do {
+  //   printf(">Entre com um valor de R$1,00 até R$999.999,99: \n");
+  //   printf("[Entre com apenas números!]\n");
+  //   scanf("%ld", Valor);
+  // }
+  // while (*Valor < 1 || *Valor > 99999999 );
+ 
+  centavos = *Valor%100;
+  real = (*Valor/100)%1000;
+  mil = (*Valor/100)/1000;
+  printf("Você entro com R$ %d.%d,%d.\n", mil, real, centavos);
+ 
   return;
 }//Leitura_Valor
-
+ 
 //==============================================================================
-
+ 
 short Reais(int Valor, char *Str)  {
   Cadeia Str_cent, Str_unid, Str_deze;
   int reais = (Valor%1000);
-
+ 
   strcpy(Str_cent, NULA);
   strcpy(Str_unid, NULA);
   strcpy(Str_deze, NULA);
-
+ 
   if(reais) {
     if( Centena(reais, Str_cent) ) {
       if( Dezena(reais, Str_deze) )  {
@@ -108,9 +133,16 @@ short Reais(int Valor, char *Str)  {
       }
       else {
         if( Unidade(reais, Str_unid) ) {
-          strcat(Str_cent, Str_unid);
-          strcpy(Str, Str_cent);
-          strcat(Str, " reais ");
+          if( reais%10 == 1 ) {
+            strcat(Str_cent, Str_unid);
+            strcat(Str_cent, " real ");
+            strcat(Str, Str_cent);
+          }
+          else  {
+            strcat(Str_cent, Str_unid);
+            strcpy(Str, Str_cent);
+            strcat(Str, " reais ");
+          }
         }
         else {
           if( (reais/100) == 1 ) strcpy(Str_cent, " cem ");
@@ -122,17 +154,17 @@ short Reais(int Valor, char *Str)  {
   }
   else return 0;
 } //Reais
-
+ 
 //==============================================================================
-
+ 
 short Centavos( long int Valor, char *Str)  {
-
+ 
   int cent = (Valor%100);
   Cadeia Str_unid, Str_deze;
-
+ 
   strcpy(Str_unid, NULA);
   strcpy(Str_deze, NULA);
-
+ 
   if(cent)  {
     if( !Dezena(cent, Str_deze) )  {
       if( Unidade(cent, Str_unid) )
@@ -160,13 +192,13 @@ short Centavos( long int Valor, char *Str)  {
   }
   else return 0;
 } //Centavos
-
+ 
 //==============================================================================
-
+ 
 short Unidade(int Valor, char *Str) {
-
+ 
   int unidade = Valor%DEZ;
-
+ 
   if(unidade) {
     switch (unidade) {
       case 1 : strcat(Str, " um ");     break;
@@ -183,19 +215,19 @@ short Unidade(int Valor, char *Str) {
   }
   else return 0;
 } //Unidade
-
+ 
 //==============================================================================
-
+ 
 short Dezena(int Valor, char *Str)  {
-
+ 
   int unidade, dezena;
-
+ 
   dezena = (Valor/DEZ)%DEZ;
-
+ 
   if(!dezena) return 0;
   else if(dezena == 1)  {
     unidade = Valor%DEZ;
-
+ 
     switch (unidade) {
       case 0 :  strcat(Str, " dez");        break;
       case 1 :  strcat(Str, " onze");       break;
@@ -224,13 +256,13 @@ short Dezena(int Valor, char *Str)  {
     return 2;
   }
 } // Dezena
-
+ 
 //==============================================================================
-
+ 
 short Centena(int Valor, char *Str) {
-
+ 
   int centena = (Valor%1000)/100;
-
+ 
   if(centena) {
     switch (centena) {
       case 1 : strcat(Str, " cento ");        break;
@@ -247,18 +279,18 @@ short Centena(int Valor, char *Str) {
   }
   else return 0;
 } //Centena
-
+ 
 //==============================================================================
-
+ 
 short Milhar(int Valor, char *Str) {
-
+ 
   Cadeia Str_cent, Str_unid, Str_deze;
   int milhar = (Valor/1000);
-
+ 
   strcpy(Str_cent, NULA);
   strcpy(Str_unid, NULA);
   strcpy(Str_deze, NULA);
-
+ 
   if(milhar) {
     if( Centena(milhar, Str_cent) ) {
       if( Dezena(milhar, Str_deze) )  {
@@ -285,7 +317,6 @@ short Milhar(int Valor, char *Str) {
         }
         else {
           if((milhar/100) == 1) strcpy(Str_cent, " cem mil ");
-          strcat(Str_cent, " mil ");
           strcat(Str, Str_cent);
         }
       }
@@ -322,20 +353,18 @@ short Milhar(int Valor, char *Str) {
   }
   else return 0;
 } //Centena
-
-//MAIN==========================================================================
-
-int main(void) {
-
-  setlocale(LC_ALL, "");
-
-  long int Valor;
-
-  Leitura_Valor(&Valor);
-
+ 
+//==============================================================================
+ 
+void Concatenar(long int Valor) {
   int reais = (Valor/100);
-
-
+  Cadeia Str_unid;
+  Cadeia Str_deze;
+ 
+  strcpy(Str_cent, NULA);
+  strcpy(Str_unid, NULA);
+  strcpy(Str_deze, NULA);
+ 
   printf("O valor lido é: \n");
   if(Milhar(reais, Str_mil))  {
     if(Reais(reais, Str_reais))
@@ -368,11 +397,31 @@ int main(void) {
         strcpy(Str_final, Str_reais);
       }
     }
+    else  {
+      if(Centavos(Valor, Str_cent))
+        strcpy(Str_final, Str_cent);
+    }
   }
-
+  return;
+}
+ 
+//MAIN==========================================================================
+ 
+int main(void) {
+ 
+  setlocale(LC_ALL, "");
+ 
+  long int Valor;
+ 
+  Leitura_Valor(&Valor);
+ 
+  Concatenar(Valor);
+ 
   PULA;
   puts(Str_final);
   PULA;
-
+  
+  system("PAUSE");
+  
   return 0;
 }
